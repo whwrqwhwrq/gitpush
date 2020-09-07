@@ -18,5 +18,11 @@ public class test {
         map.put(10, 334);
 
         System.out.println(a.getMap().get(1));
+        System.out.println(a.getMap().get(2));
+        System.out.println(a.getMap().get(3));
+        System.out.println(a.getMap().get(4));
+        System.out.println(a.getMap().get(5));
+        System.out.println(a.getMap().get(6));
+        System.out.println(a.getMap().get(7));
     }
 }
