@@ -10,6 +10,13 @@ public class test {
         map.put(2,2342424);
         map.put(3, 334);
         map.put(4, 334);
+        map.put(5, 334);
+        map.put(6, 334);
+        map.put(7, 334);
+        map.put(8, 334);
+        map.put(9, 334);
+        map.put(10, 334);
+
         System.out.println(a.getMap().get(1));
     }
 }
