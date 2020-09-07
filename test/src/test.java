@@ -9,6 +9,7 @@ public class test {
         map.put(1, 213113);
         map.put(2,2342424);
         map.put(3, 334);
+        map.put(4, 334);
         System.out.println(a.getMap().get(1));
     }
 }
