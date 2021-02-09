@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wrq.mybatis.mapper.PlayerMapper">
+    <resultMap id="Player" type="wrq.mybatis.beans.Player">
+        <result column="name" property="playerName"/>
+        <result column="server_number" property="playerServerNumber"/>
+        <result column="server_name" property="playerServerName"/>
+        <result column="level" property="playerLevel"/>
+    </resultMap>
+
+    <resultMap id="GameMap" type="wrq.mybatis.beans.GameMap">
+        <result column="mapid" property="mapId"/>
+        <result column="mapname" property="mapName"/>
+    </resultMap>
+
+    <resultMap id="incompleteEntity" type="wrq.mybatis.beans.incompletePlayer">
+        <result column="name" property="playerNameName"/>
+        <result column="level" property="playerLevelLevel"/>
+    </resultMap>
+
+    <select id="getPlayersByServerNumber" resultMap="Player">
+    select * from player where server_number = #{server_number}
+  </select>
+
+    <select id="getIncompleteEntity" resultMap="incompleteEntity">
+    select `name`,`level` from player
+    </select>
+
+    <select id="getTwoVariable" resultMap="Player">
+    select `name`,server_number from player
+    </select>
+    <select id="getPlayerByName" resultMap="Player">
+        select * from player where `name` = #{namename}
+    </select>
+    <insert id="registerPlayer" parameterType="wrq.mybatis.beans.Player">
+        insert into player(`name` ,`server_number`, `server_name` ,`level`)
+        values (#{player.playerName},#{player.playerServerNumber},#{player.playerServerName},#{player.playerLevel})
+    </insert>
+
+    <delete id="deletePlayer">
+        delete from player where id = #{id}
+    </delete>
+    
+    <select id="getPlayerWithGameMap" resultMap="PlayerWithGameMap">
+        select * from player
+    </select>
+    <resultMap id="PlayerWithGameMap" type="wrq.mybatis.beans.Player">
+        <result column="name" property="playerName"/>
+        <result column="server_number" property="playerServerNumber"/>
+        <result column="server_name" property="playerServerName"/>
+        <result column="level" property="playerLevel"/>
+        <association column="gamemap_id" property="gameMap" javaType="wrq.mybatis.beans.GameMap" select="getGameMap"/>
+    </resultMap>
+
+    <select id="getPlayerWithGameMap2" resultMap="PlayerWithGameMap2">
+        select p.name pname,p.level plevel,g.mapname gname
+        from player p,gamemap g
+        where p.gamemap_id = g.id
+    </select>
+    <resultMap id="PlayerWithGameMap2" type="wrq.mybatis.beans.Player">
+        <result property="playerName" column="pname"/>
+        <result property="playerLevel" column="plevel"/>
+        <association property="gameMap" javaType="wrq.mybatis.beans.GameMap">
+            <result property="mapName" column="gname"/>
+        </association>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wrq.mapper.SiteMapper">
+<insert id="insert" parameterType="wrq.beans.Site">
+    insert into site
+    values
+    (
+    #{id},
+    #{name},
+    #{url},
+    #{pv},
+    #{coop},
+    #{createTime}
+    )
+</insert>
+
+<select id="queryIf" parameterType="map" resultType="wrq.beans.Site">
+    select * from site
+    <where>
+
+    <if test="name != null">
+        and `name`=#{name}
+    </if>
+    <if test="coop != null">
+        and `coop`=#{coop}
+    </if>
+
+    </where>
+</select>
+<select id="queryWhereChoose" parameterType="map" resultType="wrq.beans.Site">
+    select * from site
+    <where>
+        <choose>
+            <when test="name != null">
+                and `name`=#{name}
+            </when>
+            <when test="coop != null">
+                and `coop`=#{coop}
+            </when>
+            <otherwise>
+                and `name` = '斗鱼'
+            </otherwise>
+        </choose>
+    </where>
+</select>
+<update id="updateSite" parameterType="map">
+    update site
+    <set>
+        <if test="name!=null">
+            name = #{name},
+        </if>
+        <if test="url!=null">
+            url = #{url},
+        </if>
+        <if test="pv!=null">
+            pv = #{pv},
+        </if>
+        <if test="coop!=null">
+            coop = #{coop}
+        </if>
+    </set>
+    where id=#{id}
+</update>
+
+    <select id="queryForeach" parameterType="list" resultType="wrq.beans.Site">
+        select * from site
+        <where>
+            <if test="pvList.size != 0">
+                and pv in
+            <foreach collection="pvList" item="pv" open="(" close=")" separator=",">
+                #{pv}
+            </foreach>
+            </if>
+        </where>
+        
+    </select>
+</mapper>

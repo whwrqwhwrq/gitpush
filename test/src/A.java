@@ -1,20 +1,24 @@
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class A {
-    private Map map;
+    private volatile static List<String> list = new ArrayList<String>();
 
-    public Map getMap() {
-        return map;
+    void add(List list) {
+        list.add(UUID.randomUUID().toString());
     }
 
-    public void setMap(Map map) {
-        this.map = map;
+    String getSize(List list) {
+        return "集合容量" + String.valueOf(list.size());
     }
 
-    @Override
-    public String toString() {
-        return "A{" +
-                "map=" + map +
-                '}';
+    public static void main(String[] args) {
+        A a = new A();
+        for (int i = 0; i < 500; i++) {
+            a.add(list);
+            System.out.println(list.get(i));
+        }
+        System.out.println(a.getSize(list));
     }
 }

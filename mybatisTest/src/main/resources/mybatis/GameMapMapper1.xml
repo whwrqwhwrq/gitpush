@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wrq.mybatis.mapper.GameMapMapper1">
+    <resultMap id="GameMap" type="wrq.mybatis.beansOneToMulti.GameMap">
+        <result column="gmapid" property="mapId"/>
+        <result column="gmapname" property="mapName"/>
+        <collection property="players" ofType="wrq.mybatis.beansOneToMulti.Player">
+            <result column="pname" property="playerName"/>
+            <result column="pservername" property="playerServerName"/>
+        </collection>
+    </resultMap>
+    <select id="getAll" resultMap="GameMap">
+        select p.name pname,p.server_name pservername,g.mapid gmapid,g.mapname gmapname
+        from player p, gamemap g
+        where p.gamemap_id = g.id
+    </select>
+
+    <select id="getOne" resultMap="GameMap">
+        select p.name pname,p.server_name pservername,g.mapid gmapid,g.mapname gmapname
+        from player p, gamemap g
+        where p.gamemap_id = g.id and g.mapid = #{mapid}
+    </select>
+</mapper>

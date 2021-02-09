@@ -3,10 +3,12 @@ import java.lang.reflect.Field;
 
 //反射操作注解
 public class TestClass7 {
-    public static void main(String[] args) throws ClassNotFoundException, NoSuchFieldException {
-        Class userC = Class.forName("User");
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, InstantiationException {
+        Class<?> userC = Class.forName("User");
+
         Annotation[] declaredAnnotations = userC.getDeclaredAnnotations();
         for (Annotation declaredAnnotation : declaredAnnotations) {
+            System.out.println(declaredAnnotation.getClass());
             System.out.println(declaredAnnotation);
         }
         //获得注解的value的值
@@ -19,6 +21,19 @@ public class TestClass7 {
         System.out.println(f.columnName());
         System.out.println(f.length());
         System.out.println(f.type());
+
+        Field[] declaredFields = userC.getDeclaredFields();
+        for (Field declaredField : declaredFields) {//获取字段名
+            declaredField.setAccessible(true);
+            String name = declaredField.getName();
+            System.out.println(name);
+        }
+        for (Field declaredField : declaredFields) {//获取字段值
+            declaredField.setAccessible(true);
+            Object o = declaredField.get(new User());
+            System.out.println(o);
+        }
+
     }
 }
 @J("db.student")

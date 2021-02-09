@@ -20,25 +20,30 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import wrq.dao.GamemapDao;
 import wrq.pojo.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
 class EsApiApplicationTests {
     @Autowired
     private RestHighLevelClient client;
+    @Autowired
+    private GamemapDao gamemapDao;
     @Test
     //创建索引
     void createIndex() throws IOException {
@@ -52,7 +57,7 @@ class EsApiApplicationTests {
     //获取索引
     @Test
     void testExistIndex() throws IOException {
-        GetIndexRequest getIndexRequest = new GetIndexRequest("jedar");
+        GetIndexRequest getIndexRequest = new GetIndexRequest("gamemap");
         boolean exists = client.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
         System.out.println(exists);
     }
@@ -89,7 +94,7 @@ class EsApiApplicationTests {
     //获取文档，判断是否存在
     @Test
     void existDoc() throws IOException {
-        GetRequest getRequest = new GetRequest("jedar0k","1");
+        GetRequest getRequest = new GetRequest("gamemap","1");
         boolean exists = client.exists(getRequest, RequestOptions.DEFAULT);
         System.out.println(exists);
     }
@@ -97,9 +102,12 @@ class EsApiApplicationTests {
     //获取文档的信息
     @Test
     void getDocMessage() throws IOException {
-        GetRequest getRequest = new GetRequest("jedar0k","1");
+        GetRequest getRequest = new GetRequest("gamemap");
         GetResponse documentFields = client.get(getRequest, RequestOptions.DEFAULT);
         Map<String, Object> source = documentFields.getSource();
+        DocumentField field = documentFields.getField("");
+        List<Object> values = field.getValues();
+        values.stream().forEach();
         String s = JSON.toJSONString(source);
         System.out.println(s);
         System.out.println(source);
@@ -180,11 +188,16 @@ class EsApiApplicationTests {
     @Test
     void search() throws IOException {
         SearchRequest searchRequest = new SearchRequest("jedar0k");
+
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.must(QueryBuilders.termQuery("name", "aaa"));
+        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("age");
+
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         //TermQueryBuilder termQueryBuilder = new TermQueryBuilder("name", "aaa");
         MatchAllQueryBuilder matchAllQueryBuilder = new MatchAllQueryBuilder();
-        //MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name","aaa");
-        searchSourceBuilder.query(matchAllQueryBuilder);
+//        MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name","aaa");
+        searchSourceBuilder.query(boolQueryBuilder);
         searchSourceBuilder.from();
         searchSourceBuilder.size(5);
         searchRequest.source(searchSourceBuilder);
@@ -192,7 +205,16 @@ class EsApiApplicationTests {
         SearchResponse search = client.search(searchRequest, RequestOptions.DEFAULT);
         System.out.println(search.getHits().getTotalHits());
         for (SearchHit hit : search.getHits()) {
-            System.out.println(hit);
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            String s = JSON.toJSONString(sourceAsMap);
+            User user = JSON.parseObject(s, User.class);
+            System.out.println(user);
         }
+    }
+
+    @Test
+    public void testDao() throws IOException {
+        String gameMapByName = gamemapDao.getGameMapByName("亚眠");
+        System.out.println(gameMapByName);
     }
 }
