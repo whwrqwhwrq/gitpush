@@ -1,9 +1,11 @@
 package jedar0k;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -26,8 +28,25 @@ public class TCPClient2 {
         while ((len = fileInputStream.read(buffer)) != -1) {
             outputStream.write(buffer,0,len);
         }
-        outputStream.close();
-        fileInputStream.close();
-        socket.close();
+
+        socket.shutdownOutput();
+
+        InputStream inputStream = socket.getInputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        byte[] buffer1 = new byte[1024];
+        int len1;
+        while ((len1 = inputStream.read(buffer1)) != -1) {
+            byteArrayOutputStream.write(buffer1,0,len1);
+        }
+
+        if (byteArrayOutputStream.toString().equals("接收完毕，可以断开")){
+            byteArrayOutputStream.close();
+            inputStream.close();
+            outputStream.close();
+            fileInputStream.close();
+            socket.close();
+        }
+
     }
 }
