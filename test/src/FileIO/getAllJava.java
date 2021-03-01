@@ -12,7 +12,6 @@ public class getAllJava {
         String[] list = file.list((dir, name) -> name.endsWith(".ini") || new File(name).isDirectory());
         for (String s : list) {
             System.out.println(s);
-
         }
 
     }
