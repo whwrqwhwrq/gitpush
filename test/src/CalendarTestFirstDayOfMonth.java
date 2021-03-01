@@ -1,5 +1,4 @@
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @Author:wrq
@@ -8,8 +7,9 @@ import java.util.Date;
 public class CalendarTestFirstDayOfMonth {
     public static void main(String[] args) {
         Calendar instance = Calendar.getInstance();
-        instance.setTime(new Date());
-        instance.add(Calendar.DAY_OF_MONTH, 1);
+        int month = instance.get(Calendar.MONTH);
+        instance.set(Calendar.MONTH, month);
+        instance.set(Calendar.DAY_OF_MONTH, 1);
         System.out.println(instance.getTime());
     }
 }
